@@ -2,52 +2,82 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const bodyParser = require('body-parser')
-
-const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/hospitalDB')
-
-const tableSchema = new mongoose.Schema({
-  name: String,
-  role: String,
-  email: String,
-  password: String,
-  contact: String,
-  dob: Date,
-})
-
-const User = mongoose.model('User', tableSchema)
+const LocalStrategy = require('passport-local')
+const passportLocalMongoose = require('passport-local-mongoose')
+const passport = require('passport')
+const User = require('./models/dataModel')
 
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(
+  require('express-session')({
+    secret: 'Rusty is a dog',
+    resave: false,
+    saveUninitialized: false,
+  }),
+)
 
-app.get('/message', (req, res) => {
-  res.json({ message: 'Hello from server!' })
+app.use(passport.initialize())
+app.use(passport.session())
+
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+app.get('/register', (req, res) => {
+  res.render('register')
 })
 
-app.post('/insert', async (req, res) => {
-  const FirstName = req.body.firstName
-  const Role = req.body.role
-  const Email = req.body.email
-  const Password = req.body.password
-  const Contact = req.body.contact
-  const Dob = req.body.dob
-  console.log(FirstName, Role)
+app.post('/register', async (req, res) => {
+  const firstName = req.body.firstName
+  const role = req.body.role
+  const email = req.body.email
+  const password = req.body.password
+  const contact = req.body.contact
+  const dob = req.body.dob
+  console.log(firstName, role)
 
   const formData = new User({
-    name: FirstName,
-    role: Role,
-    email: Email,
-    password: Password,
-    contact: Contact,
-    dob: Dob,
+    name: firstName,
+    role: role,
+    email: email,
+    password: password,
+    contact: contact,
+    dob: dob,
   })
   try {
     await formData.save()
     res.send('inserted data..')
   } catch (err) {
     console.log(err)
+  }
+})
+
+app.get('/login', (req, res) => {
+  res.render('login')
+})
+
+app.post('/login', async function (req, res) {
+  try {
+    // check if the user exists
+    const user = await User.findOne({ email: req.body.email })
+    if (user) {
+      //check if password matches
+      const result = req.body.password === user.password
+      if (result) {
+        console.log('Login Succesful')
+      } else {
+        console.log('Invalid Password')
+      }
+    } else {
+      res.status(400).json({ error: "User doesn't exist" })
+    }
+  } catch (error) {
+    res.status(400).json({ error })
   }
 })
 
