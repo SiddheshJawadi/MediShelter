@@ -6,6 +6,7 @@ const LocalStrategy = require('passport-local')
 const passportLocalMongoose = require('passport-local-mongoose')
 const passport = require('passport')
 const User = require('./models/dataModel')
+const { ReturnDocument } = require('mongodb')
 
 app.use(cors())
 app.use(express.json())
@@ -29,35 +30,46 @@ passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
 app.get('/register', (req, res) => {
-  res.render('register')
+  console.log(req.app)
+  res.sendFile('register')
 })
 
 app.post('/register', async (req, res) => {
-  const firstName = req.body.firstName
-  const role = req.body.role
-  const email = req.body.email
-  const password = req.body.password
-  const contact = req.body.contact
-  const dob = req.body.dob
-  console.log(firstName, role)
+  const user = await User.findOne(
+    { email: req.body.email },
+    { contact: req.body.contact },
+  )
+  if (user) {
+    res.send('<h1>Email or Phone Number Already Registered</h1>')
+    return res.status(422)
+  } else {
+    const firstName = req.body.firstName
+    const role = req.body.role
+    const email = req.body.email
+    const password = req.body.password
+    const contact = req.body.contact
+    const dob = req.body.dob
+    console.log(firstName, role)
 
-  const formData = new User({
-    name: firstName,
-    role: role,
-    email: email,
-    password: password,
-    contact: contact,
-    dob: dob,
-  })
-  try {
-    await formData.save()
-    res.send('inserted data..')
-  } catch (err) {
-    console.log(err)
+    const formData = new User({
+      name: firstName,
+      role: role,
+      email: email,
+      password: password,
+      contact: contact,
+      dob: dob,
+    })
+    try {
+      await formData.save()
+      res.send('inserted data..')
+    } catch (err) {
+      console.log(err)
+    }
   }
 })
 
 app.get('/login', (req, res) => {
+  console.log(req.app)
   res.render('login')
 })
 
