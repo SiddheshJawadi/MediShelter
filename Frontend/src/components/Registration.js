@@ -30,7 +30,7 @@ export default function Registration() {
           className="Name"
           type="text"
           name="name"
-          placeholder="First name ..."
+          placeholder="First name"
           onChange={(e) => {
             setName(e.target.value)
           }}
@@ -41,7 +41,7 @@ export default function Registration() {
           className="Role"
           type="text"
           name="role"
-          placeholder="Role...."
+          placeholder="Role"
           onChange={(e) => {
             setRole(e.target.value)
           }}
@@ -52,7 +52,7 @@ export default function Registration() {
           className="Email"
           type="text"
           name="email"
-          placeholder="Email ..."
+          placeholder="Email"
           onChange={(e) => {
             setEmail(e.target.value)
           }}
@@ -63,7 +63,7 @@ export default function Registration() {
           className="Password"
           type="password"
           name="password"
-          placeholder="Password ..."
+          placeholder="Password"
           onChange={(e) => {
             setPassword(e.target.value)
           }}
@@ -74,7 +74,7 @@ export default function Registration() {
           className="Contact"
           type="text"
           name="contact"
-          placeholder="Contact Number..."
+          placeholder="Contact Number"
           onChange={(e) => {
             setContact(e.target.value)
           }}
@@ -85,7 +85,7 @@ export default function Registration() {
           className="DOB"
           type="date"
           name="dob"
-          placeholder="Date of Birth ..."
+          placeholder="Date of Birth"
           onChange={(e) => {
             setDob(e.target.value)
           }}
