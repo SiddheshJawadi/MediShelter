@@ -5,7 +5,11 @@ const bodyParser = require('body-parser')
 const LocalStrategy = require('passport-local')
 const passportLocalMongoose = require('passport-local-mongoose')
 const passport = require('passport')
-const User = require('./models/dataModel')
+const User = require('./models/users')
+const Document = require('./models/documents')
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
+var http = require('http')
 const { ReturnDocument } = require('mongodb')
 
 app.use(cors())
@@ -91,6 +95,26 @@ app.post('/login', async function (req, res) {
   } catch (error) {
     res.status(400).json({ error })
   }
+})
+
+app.post('/upload', upload.single('file'), async (req, res) => {
+  const file = new Document({
+    name: req.file.originalname,
+    size: req.file.size,
+    path: req.file.path,
+  })
+
+  try {
+    await file.save()
+    return res.status(200).send('File uploaded successfully.')
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send('No files were uploaded.')
+  }
+
+  res.json(file)
+
+  console.log(req.file.path)
 })
 
 app.listen(3000, () => {
