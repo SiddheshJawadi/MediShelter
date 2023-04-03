@@ -6,10 +6,10 @@ const LocalStrategy = require('passport-local')
 const passportLocalMongoose = require('passport-local-mongoose')
 const passport = require('passport')
 const User = require('./models/users')
-const Document = require('./models/documents')
+const UploadD = require('./models/uploadD')
 const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-var http = require('http')
+const fs = require('fs')
+
 const { ReturnDocument } = require('mongodb')
 
 app.use(cors())
@@ -20,7 +20,7 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   require('express-session')({
-    secret: 'Rusty is a dog',
+    secret: 'Secret',
     resave: false,
     saveUninitialized: false,
   }),
@@ -32,11 +32,6 @@ app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
-
-app.get('/register', (req, res) => {
-  console.log(req.app)
-  res.sendFile('register')
-})
 
 app.post('/register', async (req, res) => {
   const user = await User.findOne(
@@ -72,11 +67,6 @@ app.post('/register', async (req, res) => {
   }
 })
 
-app.get('/login', (req, res) => {
-  console.log(req.app)
-  res.render('login')
-})
-
 app.post('/login', async function (req, res) {
   try {
     // check if the user exists
@@ -86,8 +76,10 @@ app.post('/login', async function (req, res) {
       const result = req.body.password === user.password
       if (result) {
         console.log('Login Succesful')
+        res.status(200).json({ message: 'Login Approved' })
       } else {
         console.log('Invalid Password')
+        res.status(301).json({ message: 'Login Denied' })
       }
     } else {
       res.status(400).json({ error: "User doesn't exist" })
@@ -95,26 +87,6 @@ app.post('/login', async function (req, res) {
   } catch (error) {
     res.status(400).json({ error })
   }
-})
-
-app.post('/upload', upload.single('file'), async (req, res) => {
-  const file = new Document({
-    name: req.file.originalname,
-    size: req.file.size,
-    path: req.file.path,
-  })
-
-  try {
-    await file.save()
-    return res.status(200).send('File uploaded successfully.')
-  } catch (err) {
-    console.log(err)
-    return res.status(400).send('No files were uploaded.')
-  }
-
-  res.json(file)
-
-  console.log(req.file.path)
 })
 
 app.listen(3000, () => {
