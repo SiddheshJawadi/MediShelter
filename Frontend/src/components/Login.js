@@ -6,14 +6,19 @@ import '../components/css/Login.css'
 const Login = (props) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
-    Axios.post('http://localhost:3000/login', {
+    const response = await Axios.post('http://localhost:3000/login', {
       email: email,
       password: password,
     })
+    if (response) {
+      if (response.data.message == 'Login Approved') {
+        window.location.href = '/home'
+      } else {
+        alert('Incorrect Password')
+      }
+    }
   }
 
   return (
