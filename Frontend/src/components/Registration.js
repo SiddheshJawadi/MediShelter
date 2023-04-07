@@ -1,16 +1,34 @@
 import React, { useState } from 'react'
 import Axios from 'axios'
 import '../components/css/Registration.css'
+import { Link } from "react-router-dom";
 
 export default function Registration() {
   const [name, setName] = useState('')
   const [role, setRole] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [contact, setContact] = useState('')
+  // const [contact, setContact] = useState('')
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const [dob, setDob] = useState('')
 
+  const handleMobileNumberChange = (event) => {
+    const inputMobileNumber = event.target.value;
+
+    // Validate that the input value contains only digits and has a length of 10
+    if (/^\d{10}$/.test(inputMobileNumber)) {
+      setIsValid(true);
+      setMobileNumber(inputMobileNumber);
+    } else {
+      setIsValid(false);
+    }
+  };
+
   const handleSubmit = (e) => {
+    if (!isValid) {
+      alert("Invalid phone number");
+    }
     e.preventDefault()
 
     Axios.post('http://localhost:3000/register', {
@@ -18,7 +36,7 @@ export default function Registration() {
       role: role,
       email: email,
       password: password,
-      contact: contact,
+      contact: mobileNumber,
       dob: dob,
     })
   }
@@ -34,10 +52,11 @@ export default function Registration() {
           onChange={(e) => {
             setName(e.target.value)
           }}
+          required
         />
 
         <p> Company Role</p>
-        <input
+        {/* <input
           className="Role"
           type="text"
           name="role"
@@ -45,7 +64,20 @@ export default function Registration() {
           onChange={(e) => {
             setRole(e.target.value)
           }}
-        />
+        /> */}
+        <select
+          name="role"
+          id="role"
+          className="Role"
+          onChange={(e) => {
+            setRole(e.target.value);
+          }}
+        >
+          <option value={"radiologist doctor"}>Radiologist Doctor</option>
+          <option value={"physician doctor"}>Physician Doctor</option>
+          <option value={"patient"}>Patient</option>
+          required
+        </select>
 
         <p>Email</p>
         <input
@@ -56,6 +88,7 @@ export default function Registration() {
           onChange={(e) => {
             setEmail(e.target.value)
           }}
+          required
         />
 
         <p>Password</p>
@@ -67,6 +100,7 @@ export default function Registration() {
           onChange={(e) => {
             setPassword(e.target.value)
           }}
+          required
         />
 
         <p>Contact Number</p>
@@ -75,9 +109,8 @@ export default function Registration() {
           type="text"
           name="contact"
           placeholder="Contact Number"
-          onChange={(e) => {
-            setContact(e.target.value)
-          }}
+          onChange={handleMobileNumberChange}
+          required
         />
 
         <p>Date of Birth</p>
@@ -89,9 +122,18 @@ export default function Registration() {
           onChange={(e) => {
             setDob(e.target.value)
           }}
+          required
         />
 
         <button type="submit">Submit</button>
+        <div>
+          <span>
+            Already have an account?
+            <Link to="/login" >
+              Login
+            </Link>
+          </span>
+        </div>
       </form>
     </div>
   )
