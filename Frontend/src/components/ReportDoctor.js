@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import "../components/css/Registration.css"
 
-function UploadD() {
+
+const ReportDoctor = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [file, setFile] = useState(null)
@@ -27,7 +29,7 @@ function UploadD() {
     formData.append('file', file)
 
     try {
-      const response = await axios.post( formData, {
+      const response = await axios.post('/uploadD', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -39,25 +41,27 @@ function UploadD() {
   }
 
   return (
+    <div className="logIn-form">
     <form onSubmit={handleSubmit}>
-      <label>
+      <label style={{ margin: "8px" }} htmlFor="email">
         Name:
         <input type="text" value={name} onChange={handleNameChange} />
       </label>
       <br />
-      <label>
+      <label style={{ margin: "8px" }} htmlFor="email">
         Email:
         <input type="email" value={email} onChange={handleEmailChange} />
       </label>
       <br />
-      <label>
+      <label style={{ margin: "8px" }} htmlFor="email">
         File:
         <input type="file" onChange={handleFileChange} />
       </label>
       <br />
       <button type="submit">Submit</button>
     </form>
+    </div>
   )
 }
 
-export default UploadD
+export default ReportDoctor;
