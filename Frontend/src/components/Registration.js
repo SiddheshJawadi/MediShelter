@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Axios from 'axios'
 import '../components/css/Registration.css'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 export default function Registration() {
   const [name, setName] = useState('')
@@ -9,25 +9,25 @@ export default function Registration() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   // const [contact, setContact] = useState('')
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [isValid, setIsValid] = useState(false);
+  const [mobileNumber, setMobileNumber] = useState('')
+  const [isValid, setIsValid] = useState(false)
   const [dob, setDob] = useState('')
 
   const handleMobileNumberChange = (event) => {
-    const inputMobileNumber = event.target.value;
+    const inputMobileNumber = event.target.value
 
     // Validate that the input value contains only digits and has a length of 10
     if (/^\d{10}$/.test(inputMobileNumber)) {
-      setIsValid(true);
-      setMobileNumber(inputMobileNumber);
+      setIsValid(true)
+      setMobileNumber(inputMobileNumber)
     } else {
-      setIsValid(false);
+      setIsValid(false)
     }
-  };
+  }
 
   const handleSubmit = (e) => {
     if (!isValid) {
-      alert("Invalid phone number");
+      alert('Invalid phone number')
     }
     e.preventDefault()
 
@@ -70,13 +70,14 @@ export default function Registration() {
           id="role"
           className="Role"
           onChange={(e) => {
-            setRole(e.target.value);
+            setRole(e.target.value)
           }}
-        >
-          <option value={"radiologist doctor"}>Radiologist Doctor</option>
-          <option value={"physician doctor"}>Physician Doctor</option>
-          <option value={"patient"}>Patient</option>
           required
+        >
+          <option value="">Select a role</option>
+          <option value={'Patient'}>Patient</option>
+          <option value={'Doctor - Physician'}>Physician Doctor</option>
+          <option value={'Doctor - Radiologist'}>Radiologist Doctor</option>
         </select>
 
         <p>Email</p>
@@ -129,9 +130,7 @@ export default function Registration() {
         <div>
           <span>
             Already have an account?
-            <Link to="/login" >
-              Login
-            </Link>
+            <Link to="/login">Login</Link>
           </span>
         </div>
       </form>
