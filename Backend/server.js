@@ -6,9 +6,8 @@ const LocalStrategy = require('passport-local')
 const passportLocalMongoose = require('passport-local-mongoose')
 const passport = require('passport')
 const User = require('./models/users')
-const UploadD = require('./models/uploadD')
+const Report = require('./models/report')
 const multer = require('multer')
-const fs = require('fs')
 const jwt = require('jsonwebtoken')
 
 app.use(cors())
@@ -73,8 +72,9 @@ app.post('/login', async function (req, res) {
     const user = await User.findOne({ email: req.body.email })
     if (user) {
       if (req.body.password === user.password) {
+        const role = user.role
         const token = jwt.sign({ email: user.email }, jwtSecret)
-        res.status(200).json({ message: 'Login Approved', token })
+        res.status(200).json({ message: 'Login Approved', token, role })
       } else {
         console.log('Invalid Password')
         res.status(200).json({ message: 'Login Denied' })
@@ -106,6 +106,41 @@ app.get('/home', verifyToken, (req, res) => {
       res.send(`<h1>Welcome ${authData.email}</h1>`)
     }
   })
+})
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  },
+})
+
+const upload = multer({ storage: storage })
+
+// Import the File model
+
+// Define route for file upload
+app.post('/report', upload.single('file'), async (req, res) => {
+  // const {Patientname,email,filename, path, size } = req.file;
+  const Patientname = req.body.name
+  const email = req.body.email
+  const { filename, path, size } = req.file
+  const file = new Report({
+    Patientname,
+    email,
+    filename,
+    path,
+    size,
+  })
+  try {
+    await file.save()
+    res.send(file)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send('Error uploading file')
+  }
 })
 
 app.listen(3000, () => {

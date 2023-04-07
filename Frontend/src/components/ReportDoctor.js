@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import "../components/css/Registration.css"
-
+import '../components/css/Registration.css'
 
 const ReportDoctor = () => {
   const [name, setName] = useState('')
@@ -29,11 +28,15 @@ const ReportDoctor = () => {
     formData.append('file', file)
 
     try {
-      const response = await axios.post('/uploadD', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await axios.post(
+        'http://localhost:3000/report',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      })
+      )
       console.log(response.data)
     } catch (error) {
       console.error(error)
@@ -42,26 +45,26 @@ const ReportDoctor = () => {
 
   return (
     <div className="logIn-form">
-    <form onSubmit={handleSubmit}>
-      <label style={{ margin: "8px" }} htmlFor="email">
-        Name:
-        <input type="text" value={name} onChange={handleNameChange} />
-      </label>
-      <br />
-      <label style={{ margin: "8px" }} htmlFor="email">
-        Email:
-        <input type="email" value={email} onChange={handleEmailChange} />
-      </label>
-      <br />
-      <label style={{ margin: "8px" }} htmlFor="email">
-        File:
-        <input type="file" onChange={handleFileChange} />
-      </label>
-      <br />
-      <button type="submit">Submit</button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        <label style={{ margin: '8px' }} htmlFor="email">
+          Name:
+          <input type="text" value={name} onChange={handleNameChange} />
+        </label>
+        <br />
+        <label style={{ margin: '8px' }} htmlFor="email">
+          Email:
+          <input type="email" value={email} onChange={handleEmailChange} />
+        </label>
+        <br />
+        <label style={{ margin: '8px' }} htmlFor="email">
+          File:
+          <input type="file" onChange={handleFileChange} />
+        </label>
+        <br />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   )
 }
 
-export default ReportDoctor;
+export default ReportDoctor
