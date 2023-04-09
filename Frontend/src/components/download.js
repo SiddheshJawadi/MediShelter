@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import "../components/css/Login.css"
 function FileDownload({ fileId }) {
   const [fileUrl, setFileUrl] = useState(null)
 
@@ -21,7 +21,7 @@ function FileDownload({ fileId }) {
   }
 
   return (
-    <div>
+    <div className="logIn-form">
       <button onClick={handleDownload}>Download File</button>
       {fileUrl && (
         <a href={fileUrl} download>

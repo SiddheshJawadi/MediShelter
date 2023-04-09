@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useState}from "react";
 import Button from "./Button/Button";
 import Navigation from "../components/MainHeader/Navigation";
 import { Link } from "react-router-dom";
@@ -6,6 +6,11 @@ import "../components/css/Navigation.css";
 import "../components/css/Patient.css";
 
 const Patient = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <div>
       <div class="welcome">
@@ -21,17 +26,46 @@ const Patient = () => {
             <Link to="/prescription">Prescription</Link>
           </li>
           <li>
-            <Link to="/report">Report</Link>
+            <Link to="/download">Report</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/about">Edit Profile</Link>
+          </li> */}
+          {/* <li>
+            <Link to="/login">Logout</Link>
+          </li> */}
+        
+      <li>
+      <div>
+      <button onClick={handleClick}>
+      <div className="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </button>
+      {isMenuOpen && (
+        <ul className="menu-options">
+          <li>
+            <Link to="/editprofile">
+              Edit Profile
+              
+            </Link>
           </li>
           <li>
-            <Link to="/login">Logout</Link>
+          <Link to="/login">
+              Logout
+              
+            </Link>
           </li>
         </ul>
-      </nav>
+      )}
     </div>
+    </li>
+    </ul>
+    </nav>
+    </div>
+
   );
 };
 
