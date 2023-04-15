@@ -1,38 +1,63 @@
-import React from "react";
-import Button from "./Button/Button";
-import Navigation from "../components/MainHeader/Navigation";
-import { Link } from "react-router-dom";
-import "../components/css/Navigation.css";
-import "../components/css/Patient.css";
+import React, { useState, useEffect } from 'react'
+import Button from './Button/Button'
+import Navigation from '../components/MainHeader/Navigation'
+import { Link } from 'react-router-dom'
+import '../components/css/Navigation.css'
+import '../components/css/Patient.css'
+import axios from 'axios'
 
 const Patient = () => {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/patient', {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      })
+      .then((response) => {
+        setName(response.data.name)
+        setEmail(response.data.email)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+
   return (
     <div>
-      <div class="welcome">
-  <h1>Welcome  Patient!</h1>
-  <p>Thanks for visiting. Feel free to look around.</p>
-</div>
+      <div className="welcome">
+        <h1>Welcome {name}!</h1>
+        <p>Thanks for visiting. Feel free to look around.</p>
+      </div>
       <nav>
         <ul>
           <li>
             <Link to="/patient">Home</Link>
           </li>
           <li>
-            <Link to="/prescription">Prescription</Link>
+            <Link to="/patient/prescription">Prescription</Link>
           </li>
           <li>
-            <Link to="/report">Report</Link>
+            <Link to="/patient/report">Report</Link>
           </li>
           <li>
-            <Link to="/about">Edit Profile</Link>
+            <Link to="/patient/about">Edit Profile</Link>
           </li>
           <li>
-            <Link to="/login">Logout</Link>
+            <Button onClick={handleLogout}>Logout</Button>
           </li>
         </ul>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Patient;
+export default Patient
