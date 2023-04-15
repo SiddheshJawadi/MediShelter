@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "babel-plugin-react-transform": "^2.0.0-beta1",
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.22"
   }
 }
