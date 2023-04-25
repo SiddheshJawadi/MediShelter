@@ -8,6 +8,7 @@ import Patient from './components/Patient'
 import RadiologistDoctor from './components/RadiologistDoctor'
 import ReportDoctor from './components/ReportDoctor'
 import PatientReports from './components/PatientReports'
+import Prescription from './components/prescription'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/patient" element={<Patient />} />
             <Route path="/radiologistdoctor" element={<RadiologistDoctor />} />
             <Route path="/reportdoctor" element={<ReportDoctor />} />
+            <Route path="/prescription" element={<Prescription />} />
           </Routes>
         </Router>
       </div>

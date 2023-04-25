@@ -6,6 +6,7 @@ const LocalStrategy = require('passport-local')
 const passport = require('passport')
 const User = require('./models/users')
 const Report = require('./models/report')
+const PrescriptionForm = require('./models/PrescriptionForm')
 const multer = require('multer')
 const jwt = require('jsonwebtoken')
 
@@ -137,6 +138,30 @@ app.post('/report', upload.single('file'), async (req, res) => {
   }
 })
 
+app.post('/form', async(req, res) => {
+  console.log('Request', req.body);
+  let reqPatientName=req.body.patientName
+  let reqEmail=req.body.email
+  let reqMedicines=req.body.medicines
+  let reqRemarks=req.body.remarks
+
+  let newForm = new PrescriptionForm({
+    patientName:reqPatientName,
+    email:reqEmail,
+    medicines:reqMedicines,
+    remarks:reqRemarks,
+  });
+console.log('NEW FORM', newForm);
+  try {
+    await newForm.save();
+    res.send(newForm)
+    res.status(200);
+  } catch (err) {
+    console.log(err)
+    res.status(500).send('Error sending data')
+  }
+});
+
 app.get('/patient', verifyToken, async (req, res) => {
   try {
     const decoded = jwt.verify(req.token, jwtSecret)
@@ -200,8 +225,18 @@ app.use((req, res, next) => {
     'GET, POST, OPTIONS, PUT, PATCH, DELETE',
   )
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001') // Replace with your React app URL
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+  )
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   next()
 })
+
+app.use(bodyParser.urlencoded({ extended: true }))
+
+
 
 app.listen(3000, () => {
   console.log(`Server is running on port 3000.`)
