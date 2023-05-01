@@ -23,7 +23,13 @@ const Login = (props) => {
           window.location.href = '/patient'
         } else if (response.data.role === 'Doctor - Radiologist') {
           window.location.href = '/radiologistdoctor'
-        } else {
+
+        } 
+        else if (response.data.role === 'Doctor - Physician') {
+          window.location.href = '/physiciandoctor'
+
+        } 
+        else {
           window.location.href = '/home'
         }
       } else {

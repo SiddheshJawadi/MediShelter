@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Button from './Button/Button'
+
 import Navigation from '../components/MainHeader/Navigation'
 import { Link } from 'react-router-dom'
 import '../components/css/Navigation.css'
@@ -30,14 +30,18 @@ const Patient = () => {
     localStorage.removeItem('token')
     window.location.href = '/login'
   }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <div>
       <div className="welcome">
         <h1>Welcome {name}!</h1>
         <p>Thanks for visiting. Feel free to look around.</p>
       </div>
-      <nav>
+      {/* <nav>
         <ul>
           <li>
             <Link to="/patient">Home</Link>
@@ -55,8 +59,50 @@ const Patient = () => {
             <Button onClick={handleLogout}>Logout</Button>
           </li>
         </ul>
-      </nav>
+      </nav> */}
+      <div>
+       <nav>
+        <ul>
+          <li>
+            <Link to="/patient">Home</Link>
+          </li>
+          <li>
+            <Link to="/blankprescription">Prescription</Link>
+          </li>
+          <li>
+            <Link to="/patient/report">Report</Link>
+          </li>
+         
+        
+      <li>
+      <div>
+      <button onClick={handleClick}>
+      <div className="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </button>
+      {isMenuOpen && (
+        <ul className="menu-options">
+          <li>
+            <Link to="/editprofile">
+              Edit Profile
+              
+            </Link>
+          </li>
+          <li>
+          <button onClick={handleLogout}>Logout</button>
+          </li>
+        </ul>
+      )}
     </div>
+    </li>
+    </ul>
+    </nav>
+    </div>
+    </div>
+    
   )
 }
 
