@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState }  from 'react'
 import { Link } from 'react-router-dom'
 import '../components/css/Navigation.css'
 import '../components/css/Patient.css'
@@ -9,6 +9,11 @@ function RadiologistDoctor() {
     localStorage.removeItem('token')
     window.location.href = '/login'
   }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
   return (
     <div>
       <div>
@@ -17,7 +22,7 @@ function RadiologistDoctor() {
           <p>Thanks for visiting. Feel free to look around.</p>
         </div>
       </div>
-      <div>
+      {/* <div>
         <nav>
           <ul>
             <li>
@@ -37,7 +42,49 @@ function RadiologistDoctor() {
             </li>
           </ul>
         </nav>
-      </div>
+      </div> */}
+       
+      <div>
+       <nav>
+        <ul>
+          <li>
+            <Link to="/radiologistdoctor">Home</Link>
+          </li>
+          <li>
+            <Link to="/blankprescription">Prescription</Link>
+          </li>
+          <li>
+            <Link to="/reportdoctor">Report</Link>
+          </li>
+         
+        
+      <li>
+      <div>
+      <button onClick={handleClick}>
+      <div className="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </button>
+      {isMenuOpen && (
+        <ul className="menu-options">
+          <li>
+            <Link to="/editprofile">
+              Edit Profile
+              
+            </Link>
+          </li>
+          <li>
+          <button onClick={handleLogout}>Logout</button>
+          </li>
+        </ul>
+      )}
+    </div>
+    </li>
+    </ul>
+    </nav>
+    </div>
     </div>
   )
 }

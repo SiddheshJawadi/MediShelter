@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-
+import '../components/css/Navigation.css'
+import '../components/css/reportsdwnload.css'
+import { Link } from 'react-router-dom'
 function Reports() {
   const [reports, setReports] = useState([])
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   useEffect(() => {
     axios
@@ -41,8 +52,55 @@ function Reports() {
 
   return (
     <div>
-      <h1>Reports</h1>
-      <table>
+      <div>
+    <nav>
+     <ul>
+       <li>
+         <Link to="/patient">Home</Link>
+       </li>
+       <li>
+         <Link to="/download">Prescription</Link>
+       </li>
+       <li>
+         <Link to="/patient/report">Report</Link>
+       </li>
+      
+     
+   <li>
+   <div>
+   <button onClick={handleClick}>
+   <div className="menu-icon">
+       <div></div>
+       <div></div>
+       <div></div>
+     </div>
+   </button>
+   {isMenuOpen && (
+     <ul className="menu-options">
+       <li>
+         <Link to="/editprofile">
+           Edit Profile
+           
+         </Link>
+       </li>
+       <li>
+       <button onClick={handleLogout}>Logout</button>
+       </li>
+     </ul>
+   )}
+ </div>
+ </li>
+ </ul>
+ </nav>
+ </div>
+ 
+    
+    <div >
+      <div class="centered-container">
+  <h1>Reports</h1>
+</div>
+      <div class="table-container">
+      <table class="table">
         <thead>
           <tr>
             <th>Patient Name</th>
@@ -64,6 +122,8 @@ function Reports() {
           ))}
         </tbody>
       </table>
+      </div>
+    </div>
     </div>
   )
 }

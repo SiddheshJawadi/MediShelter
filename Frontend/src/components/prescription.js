@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Axios from 'axios';
+import "../components/css/Navigation.css";
+import "../components/css/Prescription.css";
+import "../components/css/Patient.css";
+import { Link } from "react-router-dom";
+
 
 function MedicineField({ id, onChange }) {
   const [medicineName, setMedicineName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [usage, setUsage] = useState('');
+  
 
   const handleMedicineNameChange = (e) => {
     setMedicineName(e.target.value);
     onChange(id, { medicineName: e.target.value, quantity, usage });
+
   };
 
   const handleQuantityChange = (e) => {
@@ -35,6 +42,12 @@ function App() {
   const [email, setEmail] = useState('');
   const [medicines, setMedicines] = useState([{ id: 1, medicineName: '', quantity: '', usage: '' }]);
   const [remarks, setRemarks] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const formRef = useRef(null);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const handlePatientNameChange = (e) => {
     setPatientName(e.target.value);
@@ -58,6 +71,7 @@ function App() {
 
 
     setMedicines((medicines) => [...medicines, { id: medicines.length + 1, medicineName: '', quantity: '', usage: '' }]);
+    formRef.current.style.height = `${formRef.current.scrollHeight}px`;
   };
 
   const handleRemarksChange = (e) => {
@@ -75,8 +89,57 @@ function App() {
         remarks:remarks,
       })
   };
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+
 
   return (
+     <div>
+      <div>
+       <nav>
+        <ul>
+          <li>
+            <Link to="/physiciandoctor">Home</Link>
+          </li>
+          <li>
+            <Link to="/prescription">Prescription</Link>
+          </li>
+          <li>
+            <Link to="/blankreport">Report</Link>
+          </li>
+         
+        
+      <li>
+      <div>
+      <button onClick={handleClick}>
+      <div className="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </button>
+      {isMenuOpen && (
+        <ul className="menu-options">
+          <li>
+            <Link to="/editprofile">
+              Edit Profile
+              
+            </Link>
+          </li>
+          <li>
+          <button onClick={handleLogout}>Logout</button>
+          </li>
+        </ul>
+      )}
+    </div>
+    </li>
+    </ul>
+    </nav>
+    </div>
+    
+    <div className="prescription-form" ref={formRef}>
     <form onSubmit={handleSubmit}>
       <div>
         <label>Patient Name:</label>
@@ -99,6 +162,8 @@ function App() {
       </div>
       <button type="submit">Submit</button>
     </form>
+    </div>
+    </div>
   );
 }
 

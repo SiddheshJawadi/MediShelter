@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import '../components/css/Registration.css'
+import { Link } from 'react-router-dom'
 
 const ReportDoctor = () => {
   const [name, setName] = useState('')
@@ -42,8 +43,60 @@ const ReportDoctor = () => {
       console.error(error)
     }
   }
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.href = '/login'
+  }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
+    <div>
+    <div>
+    <nav>
+        <ul>
+          <li>
+            <Link to="/radiologistdoctor">Home</Link>
+          </li>
+          <li>
+            <Link to="/blankprescription">Prescription</Link>
+          </li>
+          <li>
+            <Link to="/reportdoctor">Report</Link>
+          </li>
+         
+        
+      <li>
+      <div>
+      <button onClick={handleClick}>
+      <div className="menu-icon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </button>
+      {isMenuOpen && (
+        <ul className="menu-options">
+          <li>
+            <Link to="/editprofile">
+              Edit Profile
+              
+            </Link>
+          </li>
+          <li>
+          <button onClick={handleLogout}>Logout</button>
+          </li>
+        </ul>
+      )}
+    </div>
+    </li>
+    </ul>
+    </nav>
+
+    </div>
     <div className="logIn-form">
       <form onSubmit={handleSubmit}>
         <label style={{ margin: '8px' }} htmlFor="email">
@@ -63,6 +116,7 @@ const ReportDoctor = () => {
         <br />
         <button type="submit">Submit</button>
       </form>
+    </div>
     </div>
   )
 }
