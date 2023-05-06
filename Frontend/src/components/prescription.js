@@ -1,170 +1,206 @@
-import React, { useState, useRef } from 'react';
-import Axios from 'axios';
-import "../components/css/Navigation.css";
-import "../components/css/Prescription.css";
-import "../components/css/Patient.css";
-import { Link } from "react-router-dom";
-
+import React, { useState, useRef } from 'react'
+import Axios from 'axios'
+import '../components/css/Navigation.css'
+import '../components/css/Prescription.css'
+import '../components/css/Patient.css'
+import { Link } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
 
 function MedicineField({ id, onChange }) {
-  const [medicineName, setMedicineName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [usage, setUsage] = useState('');
-  
+  const [medicineName, setMedicineName] = useState('')
+  const [quantity, setQuantity] = useState('')
+  const [usage, setUsage] = useState('')
 
   const handleMedicineNameChange = (e) => {
-    setMedicineName(e.target.value);
-    onChange(id, { medicineName: e.target.value, quantity, usage });
-
-  };
+    setMedicineName(e.target.value)
+    onChange(id, { id, medicineName: e.target.value, quantity, usage })
+  }
 
   const handleQuantityChange = (e) => {
-    setQuantity(e.target.value);
-    onChange(id, { medicineName, quantity: e.target.value, usage });
-  };
+    setQuantity(e.target.value)
+    onChange(id, { id, medicineName, quantity: e.target.value, usage })
+  }
 
   const handleUsageChange = (e) => {
-    setUsage(e.target.value);
-    onChange(id, { medicineName, quantity, usage: e.target.value });
-  };
+    setUsage(e.target.value)
+    onChange(id, { id, medicineName, quantity, usage: e.target.value })
+  }
 
   return (
     <div>
-      <input type="text" value={medicineName} onChange={handleMedicineNameChange} placeholder="Medicine Name" />
-      <input type="number" value={quantity} onChange={handleQuantityChange} placeholder="Quantity" />
-      <input type="text" value={usage} onChange={handleUsageChange} placeholder="Usage" />
+      <input
+        type="text"
+        value={medicineName}
+        onChange={handleMedicineNameChange}
+        placeholder="Medicine Name"
+      />
+      <input
+        type="number"
+        value={quantity}
+        onChange={handleQuantityChange}
+        placeholder="Quantity"
+      />
+      <input
+        type="text"
+        value={usage}
+        onChange={handleUsageChange}
+        placeholder="Usage"
+      />
     </div>
-  );
+  )
 }
 
 function App() {
-  const [patientName, setPatientName] = useState('');
-  const [email, setEmail] = useState('');
-  const [medicines, setMedicines] = useState([{ id: 1, medicineName: '', quantity: '', usage: '' }]);
-  const [remarks, setRemarks] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const formRef = useRef(null);
+  const [patientName, setPatientName] = useState('')
+  const [email, setEmail] = useState('')
+  const [medicines, setMedicines] = useState([
+    { id: 1, medicineName: '', quantity: '', usage: '' },
+  ])
+  const [remarks, setRemarks] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const formRef = useRef(null)
 
   const handleClick = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   const handlePatientNameChange = (e) => {
-    setPatientName(e.target.value);
-  };
+    setPatientName(e.target.value)
+  }
 
   const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+    setEmail(e.target.value)
+  }
 
   const handleMedicineChange = (id, medicine) => {
-    debugger
     setMedicines((medicines) => {
-      const newMedicines = [...medicines];
-      newMedicines[1] = medicine;
-      return newMedicines;
-    });
-     console.log(medicines,"medicines");
-  };
+      return medicines.map((m) => {
+        if (m.id === id) {
+          return medicine
+        } else {
+          return m
+        }
+      })
+    })
+  }
 
   const handleAddMedicine = () => {
-
-
-    setMedicines((medicines) => [...medicines, { id: medicines.length + 1, medicineName: '', quantity: '', usage: '' }]);
-    formRef.current.style.height = `${formRef.current.scrollHeight}px`;
-  };
+    const newMedicine = {
+      id: uuidv4(),
+      medicineName: '',
+      quantity: '',
+      usage: '',
+    }
+    setMedicines([...medicines, newMedicine])
+    formRef.current.style.height = `${formRef.current.scrollHeight}px`
+  }
 
   const handleRemarksChange = (e) => {
-    setRemarks(e.target.value);
-  };
+    setRemarks(e.target.value)
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    debugger
-    console.log({ patientName, email, medicines, remarks }, 'medicine status');
-      Axios.post('http://localhost:3000/form', {
-        patientName:patientName,
-        email:email,
-        medicines:medicines[1],
-        remarks:remarks,
-      })
-  };
+    e.preventDefault()
+    console.log({ patientName, email, medicines, remarks }, 'medicine status')
+    Axios.post('http://localhost:3000/prescription', {
+      patientName: patientName,
+      email: email,
+      medicines: medicines,
+      remarks: remarks,
+    })
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('token')
     window.location.href = '/login'
   }
 
-
   return (
-     <div>
+    <div>
       <div>
-       <nav>
-        <ul>
-          <li>
-            <Link to="/physiciandoctor">Home</Link>
-          </li>
-          <li>
-            <Link to="/prescription">Prescription</Link>
-          </li>
-          <li>
-            <Link to="/blankreport">Report</Link>
-          </li>
-         
-        
-      <li>
-      <div>
-      <button onClick={handleClick}>
-      <div className="menu-icon">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </button>
-      {isMenuOpen && (
-        <ul className="menu-options">
-          <li>
-            <Link to="/editprofile">
-              Edit Profile
-              
-            </Link>
-          </li>
-          <li>
-          <button onClick={handleLogout}>Logout</button>
-          </li>
-        </ul>
-      )}
-    </div>
-    </li>
-    </ul>
-    </nav>
-    </div>
-    
-    <div className="prescription-form" ref={formRef}>
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Patient Name:</label>
-        <input type="text" value={patientName} onChange={handlePatientNameChange} placeholder="Patient Name" />
+        <nav>
+          <ul>
+            <li>
+              <Link to="/physiciandoctor">Home</Link>
+            </li>
+            <li>
+              <Link to="/physiciandoctor/prescription">Prescription</Link>
+            </li>
+            <li>
+              <Link to="/blankreport">Report</Link>
+            </li>
+
+            <li>
+              <div>
+                <button onClick={handleClick}>
+                  <div className="menu-icon">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </button>
+                {isMenuOpen && (
+                  <ul className="menu-options">
+                    <li>
+                      <Link to="/editprofile">Edit Profile</Link>
+                    </li>
+                    <li>
+                      <button onClick={handleLogout}>Logout</button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" value={email} onChange={handleEmailChange} placeholder="Email" />
+
+      <div className="prescription-form" ref={formRef}>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>Patient Name:</label>
+            <input
+              type="text"
+              value={patientName}
+              onChange={handlePatientNameChange}
+              placeholder="Patient Name"
+            />
+          </div>
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="Email"
+            />
+          </div>
+          <div>
+            <label>Medicine:</label>
+            {medicines.map((medicine) => (
+              <MedicineField
+                key={medicine.id}
+                id={medicine.id}
+                onChange={handleMedicineChange}
+              />
+            ))}
+            <button type="button" onClick={handleAddMedicine}>
+              Add Medicine
+            </button>
+          </div>
+          <div>
+            <label>Remarks:</label>
+            <textarea
+              value={remarks}
+              onChange={handleRemarksChange}
+              placeholder="Remarks"
+            ></textarea>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
       </div>
-      <div>
-        <label>Medicine:</label>
-        {medicines.map((medicine) => (
-        <MedicineField key={medicine.id} id={medicine.id} onChange={handleMedicineChange} />
-        ))}
-        <button type="button" onClick={handleAddMedicine}>Add Medicine</button>
-      </div>
-      <div>
-        <label>Remarks:</label>
-        <textarea value={remarks} onChange={handleRemarksChange} placeholder="Remarks"></textarea>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
     </div>
-    </div>
-  );
+  )
 }
 
 export default App
