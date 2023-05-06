@@ -138,29 +138,62 @@ app.post('/report', upload.single('file'), async (req, res) => {
   }
 })
 
-app.post('/form', async(req, res) => {
-  console.log('Request', req.body);
-  let reqPatientName=req.body.patientName
-  let reqEmail=req.body.email
-  let reqMedicines=req.body.medicines
-  let reqRemarks=req.body.remarks
+app.post('/prescription', async (req, res) => {
+  console.log('Request', req.body)
+  let reqPatientName = req.body.patientName
+  let reqEmail = req.body.email
+  let reqMedicines = req.body.medicines
+  let reqRemarks = req.body.remarks
 
   let newForm = new PrescriptionForm({
-    patientName:reqPatientName,
-    email:reqEmail,
-    medicines:reqMedicines,
-    remarks:reqRemarks,
-  });
-console.log('NEW FORM', newForm);
+    patientName: reqPatientName,
+    email: reqEmail,
+    medicines: [...reqMedicines],
+    remarks: reqRemarks,
+  })
   try {
-    await newForm.save();
+    await newForm.save()
     res.send(newForm)
-    res.status(200);
+    res.status(200)
   } catch (err) {
     console.log(err)
     res.status(500).send('Error sending data')
   }
-});
+})
+
+app.get('/physiciandoctor', verifyToken, async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.token, jwtSecret)
+    const user = await User.findOne({ email: decoded.email })
+    if (user) {
+      res.json({
+        name: user.name,
+        email: user.email,
+      })
+    } else {
+      res.status(404).json({ message: 'User not found' })
+    }
+  } catch (err) {
+    res.status(403).json({ message: 'Unauthorized' })
+  }
+})
+
+app.get('/radiologistdoctor', verifyToken, async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.token, jwtSecret)
+    const user = await User.findOne({ email: decoded.email })
+    if (user) {
+      res.json({
+        name: user.name,
+        email: user.email,
+      })
+    } else {
+      res.status(404).json({ message: 'User not found' })
+    }
+  } catch (err) {
+    res.status(403).json({ message: 'Unauthorized' })
+  }
+})
 
 app.get('/patient', verifyToken, async (req, res) => {
   try {
@@ -235,8 +268,6 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.urlencoded({ extended: true }))
-
-
 
 app.listen(3000, () => {
   console.log(`Server is running on port 3000.`)
